@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const API_KEY = 'AIzaSyAta4sxZ8Aveo7Z_0EgCsrRCbft5r4qjcA';
+    const API_KEY = 'AIzaSyCDNjEiabdfp_0LSS3Di-qMd99gx8qmNYw';
 
     const systemPrompt = `Kamu adalah Asisten AI untuk BorneoCodeLab, sebuah agensi pembuatan website yang didirikan oleh Jefri (Jefrianus Markus). 
 Informasi tentang Jefri dan layanannya:
