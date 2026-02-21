@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="assets/logo_borneocodelab.png" type="image/png">
     <style>
         .page-content {
             padding: 120px 20px 60px;
@@ -41,17 +42,22 @@
     <!-- Header Navigation -->
     <header class="header">
         <div class="container header-container">
-            <a href="index.html" class="logo">
+            <a href="/" class="logo">
                 <img src="assets/logo_borneocodelab.png" alt="BorneoCodeLab Logo"
                     style="height: 36px; border-radius: 6px; mix-blend-mode: multiply;">
                 BorneoCodeLab
             </a>
             <nav class="nav-links">
-                <a href="index.html#layanan">Layanan</a>
-                <a href="index.html#portfolio">Portfolio</a>
-                <a href="index.html#harga">Harga</a>
+                <a href="/#layanan">Layanan</a>
+                <a href="/#portfolio">Portfolio</a>
+                <a href="/#harga">Harga</a>
+                <a href="/#cara-kerja">Cara Kerja</a>
+                <a href="/#faq">FAQ</a>
             </nav>
             <a href="https://wa.me/6282354506569" class="btn btn-primary" target="_blank">Konsultasi Gratis</a>
+            <button class="mobile-menu-btn">
+                <i class="ph ph-list"></i>
+            </button>
         </div>
     </header>
 
@@ -85,25 +91,81 @@
     <footer class="footer">
         <div class="container footer-container">
             <div class="footer-col brand-col">
-                <a href="#" class="logo footer-logo">
+                <a href="index.html" class="logo footer-logo">
                     <img src="assets/logo_borneocodelab.png" alt="BorneoCodeLab Logo"
                         style="height: 36px; border-radius: 6px;">
                     BorneoCodeLab
                 </a>
                 <p>Partner digital terpercaya untuk membantu UMKM dan bisnis lokal Go Digital dengan website profesional
                     yang terjangkau.</p>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/jefry195" target="_blank" aria-label="Facebook"><i
+                            class="ph ph-facebook-logo"></i></a>
+                    <a href="https://www.instagram.com/jefry195" target="_blank" aria-label="Instagram"><i
+                            class="ph ph-instagram-logo"></i></a>
+                    <a href="https://www.linkedin.com/in/jefrianus-markus" target="_blank" aria-label="LinkedIn"><i
+                            class="ph ph-linkedin-logo"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h3>Layanan</h3>
+                <ul>
+                    <li><a href="/#layanan">Company Profile</a></li>
+                    <li><a href="/#layanan">Toko Online</a></li>
+                    <li><a href="/#layanan">Landing Page</a></li>
+                    <li><a href="/#layanan">Web Maintenance</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Hubungi Kami</h3>
+                <ul class="contact-info">
+                    <li><i class="ph-fill ph-map-pin"></i> Jl. AW. Syahranie Gg. 15 RT. 23 Kel. Air Hitam, Kota
+                        Samarinda</li>
+                    <li><i class="ph-fill ph-phone"></i> <a href="tel:+6282354506569"
+                            style="color: inherit; text-decoration: none;">082354506569</a></li>
+                    <li><i class="ph-fill ph-envelope-simple"></i> <a href="mailto:digitalmedia.agensi@gmail.com"
+                            style="color: inherit; text-decoration: none;">digitalmedia.agensi@gmail.com</a></li>
+                </ul>
             </div>
         </div>
+
         <div class="container">
             <div class="footer-bottom">
                 <p>&copy; 2026 BorneoCodeLab. Developed by Jefrianus Markus. All rights reserved.</p>
                 <div class="footer-links">
-                    <a href="privacy-policy.html">Privacy Policy</a>
-                    <a href="terms-of-service.html">Terms of Service</a>
+                    <a href="privacy-policy">Privacy Policy</a>
+                    <a href="terms-of-service">Terms of Service</a>
                 </div>
             </div>
         </div>
-    </footer>
+        <!-- Floating WA Chatbot -->
+        <div class="ai-chatbot-container wa-chatbot-container">
+            <button class="chatbot-toggle-btn" id="chatbotToggleBtn" aria-label="Chat WhatsApp">
+                <i class="ph-fill ph-whatsapp-logo"></i>
+            </button>
+            <div class="chatbot-window" id="chatbotWindow">
+                <div class="chatbot-header" style="background-color: #25D366;">
+                    <h3 style="display: flex; align-items: center; gap: 8px;"><i class="ph-fill ph-whatsapp-logo"
+                            style="font-size: 1.4rem;"></i> Chat WhatsApp</h3>
+                    <button id="chatbotCloseBtn" aria-label="Tutup Chatbot"><i class="ph ph-x"></i></button>
+                </div>
+                <div class="chatbot-messages" id="chatbotMessages" style="background-color: #e5ddd5;">
+                    <div class="message ai-message" style="background-color: #fff; color: #111; position: relative;">
+                        Halo! 👋 Ada yang bisa kami bantu? Silakan sampaikan kebutuhan website Anda kepada kami.
+                        <span
+                            style="display: block; font-size: 0.7rem; color: #999; text-align: right; margin-top: 5px;">BorneoCodeLab</span>
+                    </div>
+                </div>
+                <div class="chatbot-input">
+                    <input type="text" id="chatbotInput" placeholder="Ketik pesan Anda di sini...">
+                    <button id="chatbotSendBtn" aria-label="Kirim Pesan ke WA" style="background-color: #25D366;"><i
+                            class="ph-fill ph-paper-plane-right"></i></button>
+                </div>
+            </div>
+        </div>
+        <script src="js/script.js"></script>
 </body>
 
 </html>

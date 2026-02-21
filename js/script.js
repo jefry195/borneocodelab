@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load Portfolios Dynamically
     const portfolioGrid = document.getElementById('portfolioGrid');
     if (portfolioGrid) {
-        fetch('admin/api.php')
+        fetch('admin/api')
             .then(res => res.json())
             .then(data => {
                 if (!data || data.length === 0) {
@@ -98,13 +98,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const card = document.createElement('div');
                     card.className = 'portfolio-card';
+
+                    const wrapLink = (content) => {
+                        return p.portfolio_link
+                            ? `<a href="${p.portfolio_link}" target="_blank" style="text-decoration: none; color: inherit;">${content}</a>`
+                            : content;
+                    };
+
                     card.innerHTML = `
                         <div class="portfolio-image">
-                            <img src="${p.image}" alt="${p.title}">
+                            ${wrapLink(`<img src="${p.image}" alt="${p.title}">`)}
                         </div>
                         <div class="portfolio-content">
                             <span class="tag">${p.category}</span>
-                            <h3>${p.title}</h3>
+                            ${wrapLink(`<h3>${p.title}</h3>`)}
                             <p>${p.description}</p>
                             <div class="tags">
                                 ${tagSpans}
@@ -164,87 +171,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const API_KEY = 'AIzaSyCDNjEiabdfp_0LSS3Di-qMd99gx8qmNYw';
-
-    const systemPrompt = `Kamu adalah Asisten AI untuk BorneoCodeLab, sebuah agensi pembuatan website yang didirikan oleh Jefri (Jefrianus Markus). 
-Informasi tentang Jefri dan layanannya:
-- Jefri adalah seorang web developer independen.
-- Menawarkan layanan pembuatan website: Company Profile, Web Sekolah / E-Learning, Web UMKM / Toko Online, Sistem Informasi, Landing Page, dan Custom Website.
-- Keunggulan: Responsive, Halaman Admin, CRUD Data, Dashboard, Integrasi Database, Hosting & Domain (opsional), Maintenance 1 bulan.
-- Pilihan Paket Harga:
-  - Starter (Rp 1.2jt/web): Max 5 halaman, responsive, gratis domain .com 1 thn, integrasi WA.
-  - Business (Rp 2.0jt/web): 8-10 halaman, premium design, SEO dasar, email bisnis, gratis revisi 2x. Paling laris.
-  - Toko Online (Rp 2.8jt/web): Unlimited produk, keranjang & ongkir otomatis, payment gateway, laporan penjualan, training admin.
-  - Custom Website: Harga disesuaikan (Chat via WA), sistem & fitur custom kompleks, API integration, UI/UX custom.
-- Kontak Layanan: WhatsApp 082354506569, Email digitalmedia.agensi@gmail.com.
-- Media Sosial Jefri: 
-  - Facebook: https://www.facebook.com/jefry195
-  - Instagram: https://www.instagram.com/jefry195
-  - LinkedIn: https://www.linkedin.com/in/jefrianus-markus
-- Proses pengerjaan: 7-14 hari kerja tergantung kesiapan konten.
-- Perpanjangan server minimal Rp 500rb - 1jt / tahun.
-Tugasmu adalah menjawab pertanyaan pengunjung website secara natural, ramah, persuasif, ringkas, dan informatif mengenai layanan BorneoCodeLab serta informasi terkait Jefri. Ajak pengunjung untuk berdiskusi dengan Jefri via WA apabila mereka tertarik atau penjelasannya sudah kamu berikan. Berikan jawaban dalam teks murni tanpa formatting seperti bold (*) atau headers (#).`;
-
-    const chatHistory = [];
-
-    const appendMessage = (text, sender) => {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${sender}-message`;
-        msgDiv.textContent = text;
-        chatbotMessages.appendChild(msgDiv);
-        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        return msgDiv;
-    };
-
-    const sendMessageToAI = async (text) => {
-        appendMessage(text, 'user');
+    const sendToWhatsApp = (text) => {
+        const phoneNumber = '6282354506569';
+        const encodedText = encodeURIComponent(text);
+        const waUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
+        window.open(waUrl, '_blank');
         chatbotInput.value = '';
-        chatbotInput.disabled = true;
-        chatbotSendBtn.disabled = true;
-
-        const typingMsg = appendMessage('Mengetik balasan...', 'ai');
-
-        chatHistory.push({ role: "user", parts: [{ text }] });
-
-        try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                    contents: chatHistory
-                })
-            });
-
-            const data = await response.json();
-            typingMsg.remove();
-
-            if (data.candidates && data.candidates.length > 0) {
-                const aiText = data.candidates[0].content.parts[0].text;
-                appendMessage(aiText, 'ai');
-                chatHistory.push({ role: "model", parts: [{ text: aiText }] });
-            } else {
-                appendMessage("Mohon maaf, terjadi kesalahan sistem saat mencoba merespon.", 'ai');
-            }
-        } catch (error) {
-            console.error('API Error:', error);
-            typingMsg.remove();
-            appendMessage("Maaf, jaringan atau server sedang bermasalah. Silakan hubungi WA Jefri di 082354506569 langsung.", 'ai');
-        } finally {
-            chatbotInput.disabled = false;
-            chatbotSendBtn.disabled = false;
-            chatbotInput.focus();
-        }
+        chatbotWindow.classList.remove('active'); // optionally close chatbot after sending
     };
 
     if (chatbotSendBtn) {
         chatbotSendBtn.addEventListener('click', () => {
             const text = chatbotInput.value.trim();
-            if (text) {
-                sendMessageToAI(text);
-            }
+            if (text) sendToWhatsApp(text);
         });
     }
 
@@ -252,9 +191,7 @@ Tugasmu adalah menjawab pertanyaan pengunjung website secara natural, ramah, per
         chatbotInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const text = chatbotInput.value.trim();
-                if (text) {
-                    sendMessageToAI(text);
-                }
+                if (text) sendToWhatsApp(text);
             }
         });
     }

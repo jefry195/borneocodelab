@@ -29,53 +29,85 @@ if ($method === 'GET') {
     exit;
 }
 
-if ($method === 'POST') {
-    $input = json_decode(file_get_contents('php://input'), true);
-    if (!$input) {
-        $input = $_POST;
-    }
-    
-    $portfolios = getPortfolios();
-    $newPortfolio = [
-        'id' => uniqid(),
-        'category' => $input['category'] ?? '',
-        'title' => $input['title'] ?? '',
-        'description' => $input['description'] ?? '',
-        'tags' => $input['tags'] ?? '',
-        'image' => $input['image'] ?? ''
-    ];
-    
-    array_push($portfolios, $newPortfolio);
-    savePortfolios($portfolios);
-    echo json_encode(['success' => true, 'data' => $newPortfolio]);
+// Authentication Check For Modifying Data
+session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized. Please login first.']);
     exit;
 }
 
-if ($method === 'PUT') {
-    $input = json_decode(file_get_contents('php://input'), true);
-    $portfolios = getPortfolios();
-    $updated = false;
-    
-    foreach ($portfolios as &$portfolio) {
-        if ($portfolio['id'] === $input['id']) {
-            $portfolio['category'] = $input['category'] ?? $portfolio['category'];
-            $portfolio['title'] = $input['title'] ?? $portfolio['title'];
-            $portfolio['description'] = $input['description'] ?? $portfolio['description'];
-            $portfolio['tags'] = $input['tags'] ?? $portfolio['tags'];
-            $portfolio['image'] = $input['image'] ?? $portfolio['image'];
-            $updated = true;
-            break;
+function handleImageUpload() {
+    if (isset($_FILES['image_upload']) && $_FILES['image_upload']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = __DIR__ . '/../assets/portfolios/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+        
+        $filename = time() . '_' . preg_replace("/[^a-zA-Z0-9.]/", "", basename($_FILES['image_upload']['name']));
+        $targetFile = $uploadDir . $filename;
+        
+        if (move_uploaded_file($_FILES['image_upload']['tmp_name'], $targetFile)) {
+            return 'assets/portfolios/' . $filename;
         }
     }
+    return null;
+}
+
+if ($method === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+    $isPut = isset($input['_method']) && strtoupper($input['_method']) === 'PUT';
     
-    if ($updated) {
-        savePortfolios($portfolios);
-        echo json_encode(['success' => true]);
+    $portfolios = getPortfolios();
+    $uploadedImagePath = handleImageUpload();
+    
+    if ($isPut) {
+        $updated = false;
+        foreach ($portfolios as &$portfolio) {
+            if ($portfolio['id'] === $input['id']) {
+                $portfolio['category'] = $input['category'] ?? $portfolio['category'];
+                $portfolio['title'] = $input['title'] ?? $portfolio['title'];
+                $portfolio['description'] = $input['description'] ?? $portfolio['description'];
+                $portfolio['tags'] = $input['tags'] ?? $portfolio['tags'];
+                $portfolio['portfolio_link'] = $input['portfolio_link'] ?? ($portfolio['portfolio_link'] ?? '');
+                
+                if ($uploadedImagePath) {
+                    $portfolio['image'] = $uploadedImagePath;
+                } else if (!empty($input['existing_image'])) {
+                    $portfolio['image'] = $input['existing_image'];
+                }
+                
+                $updated = true;
+                break;
+            }
+        }
+        
+        if ($updated) {
+            savePortfolios($portfolios);
+            echo json_encode(['success' => true]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'Not found']);
+        }
+        exit;
     } else {
-        http_response_code(404);
-        echo json_encode(['success' => false, 'message' => 'Not found']);
+        $imagePath = $uploadedImagePath ?: ($input['existing_image'] ?? 'https://picsum.photos/600/400');
+        
+        $newPortfolio = [
+            'id' => uniqid(),
+            'category' => $input['category'] ?? '',
+            'title' => $input['title'] ?? '',
+            'description' => $input['description'] ?? '',
+            'tags' => $input['tags'] ?? '',
+            'portfolio_link' => $input['portfolio_link'] ?? '',
+            'image' => $imagePath
+        ];
+        
+        array_push($portfolios, $newPortfolio);
+        savePortfolios($portfolios);
+        echo json_encode(['success' => true, 'data' => $newPortfolio]);
+        exit;
     }
-    exit;
 }
 
 if ($method === 'DELETE') {

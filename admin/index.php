@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: login');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Portfolio BorneoCodeLab</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="../assets/logo_borneocodelab.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
@@ -26,6 +34,8 @@
             </div>
             <a href="#" class="active"><i class="ph ph-briefcase me-2"></i> Portfolio</a>
             <a href="../index.html" target="_blank"><i class="ph ph-globe me-2"></i> Lihat Website</a>
+            <hr class="border-secondary">
+            <a href="logout" class="text-danger"><i class="ph ph-sign-out me-2"></i> Keluar (Logout)</a>
         </div>
 
         <!-- Main Content -->
@@ -86,8 +96,16 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">URL Gambar</label>
-                            <input type="url" class="form-control" id="image" required placeholder="https://picsum.photos/600/400">
+                            <label class="form-label">Gambar Portfolio</label>
+                            <input type="file" class="form-control" id="image_upload" accept="image/*">
+                            <input type="hidden" id="image">
+                            <div class="mt-2 text-center d-none" id="imagePreviewContainer">
+                                <img id="imagePreview" class="img-thumbnail" style="max-height: 150px;">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">URL Website Portfolio (Opsional)</label>
+                            <input type="url" class="form-control" id="portfolio_link" placeholder="https://domain.com">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Tags (pisahkan dengan koma)</label>
@@ -109,7 +127,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const API_URL = 'api.php';
+        const API_URL = 'api';
         let modal;
         let portfoliosData = [];
 
@@ -140,8 +158,12 @@
 
             portfoliosData.forEach(p => {
                 const tr = document.createElement('tr');
+                let imgUrl = p.image;
+                if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('data:')) {
+                    imgUrl = '../' + imgUrl;
+                }
                 tr.innerHTML = `
-                    <td><img src="${p.image}" class="portfolio-image" alt="${p.title}"></td>
+                    <td><img src="${imgUrl}" class="portfolio-image" alt="${p.title}"></td>
                     <td><strong>${p.title}</strong><div class="small text-muted text-truncate" style="max-width: 200px;">${p.description}</div></td>
                     <td><span class="badge bg-secondary">${p.category}</span></td>
                     <td>${p.tags}</td>
@@ -154,9 +176,26 @@
             });
         }
 
+        document.getElementById('image_upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('imagePreviewContainer').classList.remove('d-none');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('imagePreviewContainer').classList.add('d-none');
+            }
+        });
+
         function resetForm() {
             document.getElementById('portfolioForm').reset();
             document.getElementById('portfolioId').value = '';
+            document.getElementById('image').value = '';
+            document.getElementById('imagePreviewContainer').classList.add('d-none');
+            document.getElementById('imagePreview').src = '';
             document.getElementById('modalTitle').innerText = 'Tambah Portfolio';
         }
 
@@ -167,9 +206,20 @@
             document.getElementById('portfolioId').value = p.id;
             document.getElementById('title').value = p.title;
             document.getElementById('category').value = p.category;
-            document.getElementById('image').value = p.image;
+            document.getElementById('image').value = p.image || '';
+            document.getElementById('portfolio_link').value = p.portfolio_link || '';
             document.getElementById('tags').value = p.tags;
             document.getElementById('description').value = p.description;
+            
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const preview = document.getElementById('imagePreview');
+            if (p.image) {
+                preview.src = p.image.startsWith('http') || p.image.startsWith('data:') ? p.image : '../' + p.image;
+                previewContainer.classList.remove('d-none');
+            } else {
+                previewContainer.classList.add('d-none');
+                preview.src = '';
+            }
             
             document.getElementById('modalTitle').innerText = 'Edit Portfolio';
             modal.show();
@@ -182,29 +232,40 @@
             }
 
             const id = document.getElementById('portfolioId').value;
-            const data = {
-                title: document.getElementById('title').value,
-                category: document.getElementById('category').value,
-                image: document.getElementById('image').value,
-                tags: document.getElementById('tags').value,
-                description: document.getElementById('description').value
-            };
+            const formData = new FormData();
+            
+            if (id) formData.append('id', id);
+            formData.append('title', document.getElementById('title').value);
+            formData.append('category', document.getElementById('category').value);
+            formData.append('tags', document.getElementById('tags').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('portfolio_link', document.getElementById('portfolio_link').value);
+            formData.append('existing_image', document.getElementById('image').value);
+            
+            const imageFile = document.getElementById('image_upload').files[0];
+            if (imageFile) {
+                formData.append('image_upload', imageFile);
+            } else if (!id) {
+                alert('Silakan upload gambar portfolio!');
+                return;
+            }
 
-            const method = id ? 'PUT' : 'POST';
-            if (id) data.id = id;
+            if (id) {
+                formData.append('_method', 'PUT');
+            }
 
             try {
                 const res = await fetch(API_URL, {
-                    method: method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    method: 'POST', // Multipart file upload uses POST
+                    body: formData
                 });
                 
                 if (res.ok) {
                     modal.hide();
                     loadPortfolios();
                 } else {
-                    alert('Gagal menyimpan portfolio');
+                    const result = await res.json();
+                    alert('Gagal menyimpan portfolio: ' + (result.error || 'Terjadi kesalahan'));
                 }
             } catch (error) {
                 console.error(error);
