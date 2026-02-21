@@ -210,51 +210,10 @@
                 <a href="#" class="view-all">Lihat Semua Project &rarr;</a>
             </div>
 
-            <div class="portfolio-grid">
-                <!-- Portfolio 1 -->
-                <div class="portfolio-card">
-                    <div class="portfolio-image">
-                        <img src="https://picsum.photos/seed/cake/600/400" alt="Cake Shop">
-                    </div>
-                    <div class="portfolio-content">
-                        <span class="tag">TOKO ONLINE</span>
-                        <h3>Cake Shop Delight</h3>
-                        <p>Website toko kue dengan fitur pemesanan custom dan integrasi WhatsApp.</p>
-                        <div class="tags">
-                            <span>WordPress</span>
-                            <span>WooCommerce</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Portfolio 2 -->
-                <div class="portfolio-card">
-                    <div class="portfolio-image">
-                        <img src="https://picsum.photos/seed/travel/600/400" alt="Travel Agency">
-                    </div>
-                    <div class="portfolio-content">
-                        <span class="tag">COMPANY PROFILE</span>
-                        <h3>Nusantara Travel</h3>
-                        <p>Website profil perusahaan travel dengan galeri destinasi yang menawan.</p>
-                        <div class="tags">
-                            <span>HTML/CSS</span>
-                            <span>Bootstrap</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Portfolio 3 -->
-                <div class="portfolio-card">
-                    <div class="portfolio-image">
-                        <img src="https://picsum.photos/seed/tech/600/400" alt="Digital Printing">
-                    </div>
-                    <div class="portfolio-content">
-                        <span class="tag">LANDING PAGE</span>
-                        <h3>Digital Printing Pro</h3>
-                        <p>Landing page konversi tinggi untuk jasa percetakan digital kilat.</p>
-                        <div class="tags">
-                            <span>React</span>
-                            <span>Tailwind</span>
-                        </div>
-                    </div>
+            <div class="portfolio-grid" id="portfolioGrid">
+                <!-- Portfolios will be loaded here dynamically from backend -->
+                <div class="text-center" style="grid-column: 1 / -1; padding: 40px; color: var(--text-muted);">
+                    Loading portfolios...
                 </div>
             </div>
         </div>
@@ -266,6 +225,26 @@
             <div class="section-header">
                 <h2>Pilihan Paket Harga</h2>
                 <p>Investasi terbaik untuk masa depan digital bisnis Anda. Transparan, tanpa biaya tersembunyi.</p>
+            </div>
+
+            <div style="text-align: center;">
+                <div class="promo-countdown">
+                    <p>🔥 PROMO SPESIAL BERAKHIR DALAM 🔥</p>
+                    <div class="timer">
+                        <div class="time-box">
+                            <span id="hours">00</span>
+                            <small>Jam</small>
+                        </div>
+                        <div class="time-box">
+                            <span id="minutes">00</span>
+                            <small>Menit</small>
+                        </div>
+                        <div class="time-box">
+                            <span id="seconds">00</span>
+                            <small>Detik</small>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="pricing-grid">
@@ -335,6 +314,26 @@
                     <a href="https://wa.me/6282354506569?text=Halo%20Jefri%2C%20saya%20tertarik%20dengan%20paket%20website%20Toko%20Online."
                         class="btn btn-outline" target="_blank">Pilih Toko Online</a>
                 </div>
+
+                <!-- Pricing 4 -->
+                <div class="pricing-card">
+                    <div class="plan-name">Custom Website</div>
+                    <div class="price" style="margin-top: 12px; margin-bottom: 12px; height: 48px;">
+                        <span class="amount" style="font-size: 1.8rem;">Chat via WA</span>
+                    </div>
+                    <p class="plan-desc">Sistem dan fitur custom khusus dengan kebutuhan skala yang lebih kompleks.</p>
+
+                    <ul class="features">
+                        <li><i class="ph-fill ph-check-circle"></i> UI/UX Custom Design</li>
+                        <li><i class="ph-fill ph-check-circle"></i> Fitur & Sistem Dinamis</li>
+                        <li><i class="ph-fill ph-check-circle"></i> Optimasi Lanjutan</li>
+                        <li><i class="ph-fill ph-check-circle"></i> API Integration</li>
+                        <li><i class="ph-fill ph-check-circle"></i> Prioritas Support</li>
+                    </ul>
+
+                    <a href="https://wa.me/6282354506569?text=Halo%20Jefri%2C%20saya%20tertarik%20diskusi%20untuk%20pembuatan%20Custom%20Website."
+                        class="btn btn-outline" target="_blank">Diskusi Sekarang</a>
+                </div>
             </div>
         </div>
     </section>
@@ -403,9 +402,12 @@
                 <p>Partner digital terpercaya untuk membantu UMKM dan bisnis lokal Go Digital dengan website profesional
                     yang terjangkau.</p>
                 <div class="social-icons">
-                    <a href="#"><i class="ph ph-twitter-logo"></i></a>
-                    <a href="#"><i class="ph ph-instagram-logo"></i></a>
-                    <a href="#"><i class="ph ph-linkedin-logo"></i></a>
+                    <a href="https://www.facebook.com/jefry195" target="_blank" aria-label="Facebook"><i
+                            class="ph ph-facebook-logo"></i></a>
+                    <a href="https://www.instagram.com/jefry195" target="_blank" aria-label="Instagram"><i
+                            class="ph ph-instagram-logo"></i></a>
+                    <a href="https://www.linkedin.com/in/jefrianus-markus" target="_blank" aria-label="LinkedIn"><i
+                            class="ph ph-linkedin-logo"></i></a>
                 </div>
             </div>
 
@@ -422,7 +424,8 @@
             <div class="footer-col">
                 <h3>Hubungi Kami</h3>
                 <ul class="contact-info">
-                    <li><i class="ph-fill ph-map-pin"></i> Jl. AW. Syahranie Gg. 15 RT. 23 Kel. Air Hitam</li>
+                    <li><i class="ph-fill ph-map-pin"></i> Jl. AW. Syahranie Gg. 15 RT. 23 Kel. Air Hitam, Kota
+                        Samarinda</li>
                     <li><i class="ph-fill ph-phone"></i> 082354506569</li>
                     <li><i class="ph-fill ph-envelope-simple"></i> digitalmedia.agensi@gmail.com</li>
                 </ul>
@@ -433,17 +436,36 @@
             <div class="footer-bottom">
                 <p>&copy; 2026 BorneoCodeLab. Developed by Jefrianus Markus. All rights reserved.</p>
                 <div class="footer-links">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
+                    <a href="privacy-policy.html">Privacy Policy</a>
+                    <a href="terms-of-service.html">Terms of Service</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Floating WhatsApp -->
-    <a href="https://wa.me/6282354506569" class="floating-wa" target="_blank">
-        <i class="ph-fill ph-whatsapp-logo"></i>
-    </a>
+    <!-- Floating AI Chatbot -->
+    <div class="ai-chatbot-container">
+        <button class="chatbot-toggle-btn" id="chatbotToggleBtn" aria-label="Buka Chatbot FAQ">
+            <i class="ph-fill ph-chat-circle-dots"></i>
+        </button>
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <h3>Asisten AI Jefri</h3>
+                <button id="chatbotCloseBtn" aria-label="Tutup Chatbot"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message ai-message">
+                    Halo! Saya Asisten AI Jefri. Ada pertanyaan soal layanan, harga, atau cara kerja BorneoCodeLab?
+                    Silakan tanya saya!
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbotInput" placeholder="Ketik pesan Anda di sini...">
+                <button id="chatbotSendBtn" aria-label="Kirim Pesan"><i
+                        class="ph-fill ph-paper-plane-right"></i></button>
+            </div>
+        </div>
+    </div>
 
     <script src="js/script.js"></script>
 </body>

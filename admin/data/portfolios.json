@@ -1,0 +1,26 @@
+[
+    {
+        "id": "1",
+        "category": "TOKO ONLINE",
+        "title": "Cake Shop Delight",
+        "description": "Website toko kue dengan fitur pemesanan custom dan integrasi WhatsApp.",
+        "tags": "WordPress, WooCommerce",
+        "image": "https://picsum.photos/seed/cake/600/400"
+    },
+    {
+        "id": "2",
+        "category": "COMPANY PROFILE",
+        "title": "Nusantara Travel",
+        "description": "Website profil perusahaan travel dengan galeri destinasi yang menawan.",
+        "tags": "HTML/CSS, Bootstrap",
+        "image": "https://picsum.photos/seed/travel/600/400"
+    },
+    {
+        "id": "3",
+        "category": "LANDING PAGE",
+        "title": "Digital Printing Pro",
+        "description": "Landing page konversi tinggi untuk jasa percetakan digital kilat.",
+        "tags": "React, Tailwind",
+        "image": "https://picsum.photos/seed/tech/600/400"
+    }
+]
